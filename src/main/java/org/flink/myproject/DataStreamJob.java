@@ -20,10 +20,13 @@ package org.flink.myproject;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import static org.apache.flink.configuration.CoreOptions.CLASSLOADER_RESOLVE_ORDER;
 
 /**
  * Skeleton for a Flink DataStream Job.
@@ -42,7 +45,10 @@ public class DataStreamJob {
 	public static void main(String[] args) throws Exception {
 		// Sets up the execution environment, which is the main entry point
 		// to building Flink applications.
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		Configuration configuration = new Configuration();
+		configuration.set(CLASSLOADER_RESOLVE_ORDER,"parent-first");
+		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(configuration);
+		System.out.println(env.getConfiguration().get(CLASSLOADER_RESOLVE_ORDER));
 
 		/*
 		 * Here, you can start creating your execution plan for Flink.
